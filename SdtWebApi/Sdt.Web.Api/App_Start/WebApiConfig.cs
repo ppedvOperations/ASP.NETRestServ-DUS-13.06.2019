@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Web.Http;
 using Microsoft.Owin.Security.OAuth;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 namespace Sdt.Web.Api
@@ -17,6 +18,11 @@ namespace Sdt.Web.Api
             config.SuppressDefaultHostAuthentication();
             config.Filters.Add(new HostAuthenticationFilter(OAuthDefaults.AuthenticationType));
 
+            //Config
+            var jf = GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings;
+            jf.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            jf.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+
             // Web API routes
             config.MapHttpAttributeRoutes();
 
@@ -25,6 +31,12 @@ namespace Sdt.Web.Api
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            //config.Routes.MapHttpRoute(
+            //    name: "AutorApi",
+            //    routeTemplate: "api/autors",
+            //    defaults: new { controller = "autor" }
+            //);
         }
     }
 }
