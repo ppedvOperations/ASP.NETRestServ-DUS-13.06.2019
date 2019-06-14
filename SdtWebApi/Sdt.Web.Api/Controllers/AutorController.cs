@@ -8,6 +8,8 @@ using System.Web.Http;
 using Sdt.Bo.Entities;
 using Sdt.Data.Context;
 using Sdt.Data.Respository;
+using Sdt.Web.Api.ActionResults;
+using Sdt.Web.Common.Filters;
 
 namespace Sdt.Web.Api.Controllers
 {
@@ -29,6 +31,7 @@ namespace Sdt.Web.Api.Controllers
         #region GET
 
         [Route("")]
+        //[BasicAuthorize]
         public IHttpActionResult GetAutoren()
         {
             var autoren = _repository.GetAll();
@@ -75,6 +78,28 @@ namespace Sdt.Web.Api.Controllers
             _repository.Save();
 
             return CreatedAtRoute(nameof(GetAutorById), new {id = autor.AutorId}, autor);
+        }
+
+        #endregion
+
+        #region
+
+        [Route("{id:int:min(1)}")]
+        [HttpDelete]
+        //[Authorize]
+        public IHttpActionResult DeleteAutor(int id)
+        {
+            var autor = _repository.GetById(id);
+
+            if (autor == null)
+            {
+                return NotFound();
+            }
+
+            _repository.Delete(autor);
+            _repository.Save();
+
+            return new NoContentResult();
         }
 
         #endregion

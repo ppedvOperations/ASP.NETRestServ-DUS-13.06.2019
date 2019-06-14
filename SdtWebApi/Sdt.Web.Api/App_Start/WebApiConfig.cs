@@ -7,6 +7,7 @@ using System.Web.Http.Routing;
 using Microsoft.Owin.Security.OAuth;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Sdt.Web.Common.Filters;
 using Sdt.Web.Common.Routing;
 
 namespace Sdt.Web.Api
@@ -31,6 +32,9 @@ namespace Sdt.Web.Api
 
             // Web API routes
             config.MapHttpAttributeRoutes(constraintsResolver);
+
+            //Https erzwingen
+            //config.Filters.Add(new ForceHttpsAttribute());
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
