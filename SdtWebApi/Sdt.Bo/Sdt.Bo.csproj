@@ -46,6 +46,11 @@
     <Compile Include="Entities\Spruch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Sdt.Web.Common\Sdt.Web.Common.csproj">
+      <Project>{DC624198-5185-463D-B3BB-FF4CA07C7F60}</Project>
+      <Name>Sdt.Web.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

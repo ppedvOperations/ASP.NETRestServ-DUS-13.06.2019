@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Routing;
 using Microsoft.Owin.Security.OAuth;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Sdt.Web.Common.Routing;
 
 namespace Sdt.Web.Api
 {
@@ -23,8 +25,12 @@ namespace Sdt.Web.Api
             jf.ContractResolver = new CamelCasePropertyNamesContractResolver();
             jf.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 
+            //Custom Constaints
+            var constraintsResolver = new DefaultInlineConstraintResolver();
+            constraintsResolver.ConstraintMap.Add("positivNonZero", typeof(PositivNonZeroIntConstraint));
+
             // Web API routes
-            config.MapHttpAttributeRoutes();
+            config.MapHttpAttributeRoutes(constraintsResolver);
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",

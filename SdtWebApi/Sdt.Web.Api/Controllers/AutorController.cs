@@ -7,19 +7,21 @@ using System.Net.Http;
 using System.Web.Http;
 using Sdt.Bo.Entities;
 using Sdt.Data.Context;
+using Sdt.Data.Respository;
 
 namespace Sdt.Web.Api.Controllers
 {
-    [RoutePrefix("api/autors")]
+    [RoutePrefix("api/autors")]  //AutorController erbt BaseConstroller erbt ApiController
     public class AutorController : ApiController
     {
         #region Members/Konstruktoren
 
-        private readonly SdtDataContext _context;
+        private readonly IAutorRespository _repository;
 
         public AutorController()
         {
-            _context = new SdtDataContext();
+            _repository = new AutorRepository();
+            //_repository = new FakeAutorRepository();
         }
 
         #endregion
@@ -29,7 +31,7 @@ namespace Sdt.Web.Api.Controllers
         [Route("")]
         public IHttpActionResult GetAutoren()
         {
-            var autoren = _context.Autoren.Include(c => c.Sprueche).ToList();
+            var autoren = _repository.GetAll();
 
             if (!autoren.Any())
             {
@@ -39,10 +41,13 @@ namespace Sdt.Web.Api.Controllers
             return Ok(autoren);
         }
 
-        [Route("{id:int:min(1)}")]
+        //[Route("{id:int:min(1)}")]
+        [Route("{id:int:positivNonZero}", Name = nameof(GetAutorById))]
         public IHttpActionResult GetAutorById(int id)
         {
-            var autor = _context.Autoren.Find(id);
+            //LinQ -> FirstOrDefault bzw. SingleOrDefault -> SQL: where c.AutorId = @id
+
+            var autor = _repository.GetById(id);
 
             if (autor == null)
             {
@@ -50,6 +55,26 @@ namespace Sdt.Web.Api.Controllers
             }
 
             return Ok(autor);
+        }
+
+        #endregion
+
+        #region CREATE
+
+        [Route("")]
+        [HttpPost]
+        public IHttpActionResult PostAutor([FromBody] Autor autor)
+        {
+            if (!ModelState.IsValid)
+            {
+               // ModelState.AddModelError("Fachlicher FN","95736-23");
+                return BadRequest(ModelState);
+            }
+
+            _repository.Add(autor);
+            _repository.Save();
+
+            return CreatedAtRoute(nameof(GetAutorById), new {id = autor.AutorId}, autor);
         }
 
         #endregion

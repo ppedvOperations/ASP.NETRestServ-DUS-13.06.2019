@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,8 @@ namespace Sdt.Data.Context
     {
         public SdtDataContext() : base("DefaultConnection")
         {
+            Database.Log = c => Debug.WriteLine(c);
+
             Database.SetInitializer(new SdtSeedData());
         }
 
